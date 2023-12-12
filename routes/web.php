@@ -44,6 +44,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         //dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'AdminDashboard'])->name('dashboard');
+
+        //notifications
+        Route::get('/read_notification/{id}', [AdminDashboardController::class, 'ReadNotification'])->name('ReadNotification');
        
 
     });
@@ -54,3 +57,4 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => 'cust
      
       Route::get('/dashboard', [CustomerDashboardController::class, 'CustomerDashboard'])->name('dashboard');
  });
+
