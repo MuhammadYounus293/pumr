@@ -1,6 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Social\google\GoogleAuthController;
+//admin
+use App\Http\Controllers\Admin\Dashboard\AdminDashboardController;
+
+//customer
+use App\Http\Controllers\Customer\Dashboard\CustomerDashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +24,33 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+
+//google login 
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('googleLoginForm');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('handleGoogleCallback');
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Admin Routes
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+
+    //login
+    // Route::get('/login', [AuthController::class, 'Login'])->name('login');
+
+    Route::middleware(['admin', 'auth'])->group(function () {
+
+        //dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'AdminDashboard'])->name('dashboard');
+       
+
+    });
+});
+
+//Customer Routes
+Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => 'customer', 'middleware' => 'auth'], function () {   
+     
+      Route::get('/dashboard', [CustomerDashboardController::class, 'CustomerDashboard'])->name('dashboard');
+ });
