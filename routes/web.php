@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Social\google\GoogleAuthController;
+use App\Http\Controllers\NotificationSendController;
 //admin
 use App\Http\Controllers\Admin\Dashboard\AdminDashboardController;
 
@@ -47,14 +48,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         //notifications
         Route::get('/read_notification/{id}', [AdminDashboardController::class, 'ReadNotification'])->name('ReadNotification');
-       
 
+
+        //puch notification
+        Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
+        Route::get('/send-web-notification', [NotificationSendController::class, 'sendNotification'])->name('send.web-notification');
     });
 });
 
-//Customer Routes
-Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => 'customer', 'middleware' => 'auth'], function () {   
-     
-      Route::get('/dashboard', [CustomerDashboardController::class, 'CustomerDashboard'])->name('dashboard');
- });
 
+
+//Customer Routes
+Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => 'customer', 'middleware' => 'auth'], function () {
+
+    Route::get('/dashboard', [CustomerDashboardController::class, 'CustomerDashboard'])->name('dashboard');
+});

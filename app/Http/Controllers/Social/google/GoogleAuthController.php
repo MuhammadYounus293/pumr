@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Social\google;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationSendController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,12 @@ use Stripe\Customer;
 class GoogleAuthController extends Controller
 {
     //
+    protected $pushnotification;
+
+    public function __construct(NotificationSendController $pushnotification)
+    {
+        $this->pushnotification = $pushnotification;
+    }
 
     public function redirectToGoogle()
     {
@@ -69,6 +76,7 @@ class GoogleAuthController extends Controller
                 Auth::login($newUser);
 		        $admin = User::where('id',1)->first();
 		        $admin->notify(new NewUserRegister($newUser));
+                $this->pushnotification->sendNotification();
                 // Redirect the user to a dashboard or home page
                 return redirect('/home');
             }
